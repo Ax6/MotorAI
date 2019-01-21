@@ -1,3 +1,8 @@
+%%
+DATA_SAMPLING_FREQUENCY = 500;
+SIMULATION_DURATION = 0.1 - 1/DATA_SAMPLING_FREQUENCY;
+STEP_OPT = stepDataOptions('StepAmplitude', 5);
+
 %% MOTOR PARAMETERS
 R = 0.1; % Ohm
 L = 0.59e-3; % H
@@ -7,7 +12,3 @@ K = Kt;
 f = 0;%4.18e-3; % N*m*s
 Jm = 46e-3; % Kg/m^2s
 
-R = 0.28;
-L = 0.54e-3;
-K = 0.036;
-Jm = 46e-3;

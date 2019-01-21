@@ -1,2 +1,3 @@
-Motors = table(..., 
-    'VariableNames', {'Model', 'Voltage', 'Parameters'})
+file = load('DCMotors');
+Motors = file.DCMotors;
+
