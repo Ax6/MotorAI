@@ -1,29 +1,36 @@
-%% Parameters range
-R_range = [0.1 100];
-L_range = [0.01 10]*1e-3;
-K_range = [0.001 1];
-Jm_range = [1e-3 0.1];
-f = 0;
+%% Settings
+% Parameters
+PARAMETERS_SETTINGS = table( ...
+    [1e-1; 1e2], [1e-5; 1e-2], [1e-3; 1], [1e-7; 1e-4], [1e-5; 1e-2], 'VariableNames', ...
+    {'R'       , 'L'        , 'K'     , 'Jm'       , 'f'}, 'RowNames', {'min', 'max'});      
 
-%% Training Setup
-output_parameters_range = [R_range; L_range; K_range; Jm_range];
-TRAINING_SIZE = 10000;
-NN_INPUT_NEURONS = 100;
+% Training
+TRAINING_SIZE = 2000;
+NN_OUT_PARAMETERS = width(PARAMETERS_SETTINGS);
+NN_INPUT_NEURONS = length(SIM_TIME) * 2; % i and w
 NN_HIDDEN_LAYER_NEURONS = 20;
-NN_OUTPUT_NEURONS = 4;
+NN_OUTPUT_NEURONS = NN_OUT_PARAMETERS;
 
-%% Output training set generation
-out_train_set = rand(length(output_parameters_range), TRAINING_SIZE);
-out_train_set_nolog = logDecode(output_parameters_range, out_train_set);
-sim_parameters_ = num2cell(out_train_set_nolog, 2);
+%% Data generation
+% Output training set generation
+normalization_ranges = PARAMETERS_SETTINGS{{'min','max'},:}';
+out_train_set_norm = rand(NN_OUT_PARAMETERS, TRAINING_SIZE);
+out_train_set_ = logDecode(normalization_ranges, out_train_set_norm);
+sim_parameters_ = table();
+sim_parameters_{:, :} = out_train_set_';
+sim_parameters_.Properties.VariableNames = PARAMETERS_SETTINGS.Properties.VariableNames;
 
-[R_set, L_set, K_set, Jm_set] = sim_parameters_{:};
-
-%% Input training set generation
+% Input training set generation
 in_train_set = zeros(NN_INPUT_NEURONS, TRAINING_SIZE);
 
 for(p = 1:TRAINING_SIZE)
-    [w, i] = simulate(R_set(p), L_set(p), K_set(p), Jm_set(p));
+    [w, i] = simulate(sim_parameters_(p,:), ...
+                      'InputSignal', 'step', ...
+                      'Time', SIM_TIME);
     in_train_set(:, p) = [w; i];
-    p
+    if ~rem(p, 100)
+        dispStatus("Train set generation", 100 * p/TRAINING_SIZE);
+    end
 end
+
+%% Train

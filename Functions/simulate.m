@@ -1,9 +1,13 @@
-function [w, i, T] = simulate(R, L, K, Jm)
-    w_ = evalin('caller','length(data)');
-    f = w_.f;
-    DATA_SAMPLING_FREQUENCY = w_.DATA_SAMPLING_FREQUENCY;
-    SIMULATION_DURATION = w_.SIMULATION_DURATION;
-    STEP_OPT = w_.STEP_OPT;
+function [w, i, t] = simulate(params, varargin)
+    var_names = {'InputSignal', 'Time'};
+    defaults  = {ones(1, 100), 0:99};
+    [u, t] = internal.stats.parseArgs(var_names, defaults, varargin{:});
+    
+    R = params.R;
+    L = params.L;
+    K = params.K;
+    Jm = params.Jm;
+    f = params.f;
     
     sys_w = tf(K, [ ...
        L*Jm, ...
@@ -17,7 +21,13 @@ function [w, i, T] = simulate(R, L, K, Jm)
        K*K + f*R ...
        ]);
    
-    [w] = step(sys_w, 0:1/DATA_SAMPLING_FREQUENCY:SIMULATION_DURATION, STEP_OPT);
-    [i, T] = step(sys_i, 0:1/w_.DATA_SAMPLING_FREQUENCY:SIMULATION_DURATION, STEP_OPT);
+    if(u == "step")
+        opt = stepDataOptions('StepAmplitude', 1);
+        w = step(sys_w, t, opt);
+        i = step(sys_i, t, opt);
+    else
+        w = lsim(sys_w, u, t);
+        i = lsim(sys_i, u, t);
+    end
 end
 
