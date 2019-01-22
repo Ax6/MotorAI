@@ -1,14 +1,47 @@
 clc;
 addpath Functions;
+addpath Classes;
+import Parameters.*;
+import Simulation.*;
 benchmark_file = load('DCMotors');
-Motors = benchmark_file.DCMotors;
 
-simulation_setup;
-gym;
+%% SETTINGS
+% Simulation
+DATA_SAMPLING_FREQUENCY = 50;
+SIM_DURATION = 1;
+SIM_TIME = 0:1/DATA_SAMPLING_FREQUENCY:(SIM_DURATION - 1/DATA_SAMPLING_FREQUENCY);
 
-figure
-hold on
-for p=1:size(Motors, 1)
-    [w, i] = simulate(Motors(p,:), 'InputSignal', 'step', 'Time', SIM_TIME);
-    plot(SIM_TIME, w);
+% Neural Network and Training
+TRAINING_SET_SIZE = 1000;
+NN_INPUT_NEURONS = 100; % i and w
+NN_HIDDEN_LAYER_NEURONS = 10;
+NN_OUTPUT_NEURONS = 5;
+
+%% SETUP
+Motors = benchmark_file.DCMotors(:, 4:end);
+motorParameters = Parameters();
+motorSimulation = Simulation(SIM_TIME);
+
+motorParameters.range('R', [1e-1 1e2]) ...
+               .range('L', [1e-5 1e-2]) ...
+               .range('K', [1e-3 1]) ...
+               .range('f', [1e-5 1e-2]) ...
+               .range('Jm', [1e-7 1e-4]);
+
+motorSimulation.addTF("K", "[L*Jm, R*Jm + f*L, K*K + f*R]"); % Speed (w) TF
+motorSimulation.addTF("[Jm f]", "[L*Jm, R*Jm + f*L, K*K + f*R]"); % Current (i) TF
+
+%% RUN
+% Data and network consistency check
+if NN_OUTPUT_NEURONS ~= motorParameters.getCount()
+    error("Inconsistency: output network size different from motor training output size");
 end
+if NN_INPUT_NEURONS ~= length(SIM_TIME) * 2
+    error("Inconsistency: input network size different from");
+end
+
+% Train
+% gym;
+
+% Performance
+[p_total, p_params, p_motors] = performance(net, Motors, motorParameters, motorSimulation);

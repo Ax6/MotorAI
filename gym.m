@@ -1,36 +1,33 @@
-%% Settings
-% Parameters
-PARAMETERS_SETTINGS = table( ...
-    [1e-1; 1e2], [1e-5; 1e-2], [1e-3; 1], [1e-7; 1e-4], [1e-5; 1e-2], 'VariableNames', ...
-    {'R'       , 'L'        , 'K'     , 'Jm'       , 'f'}, 'RowNames', {'min', 'max'});      
-
-% Training
-TRAINING_SIZE = 2000;
-NN_OUT_PARAMETERS = width(PARAMETERS_SETTINGS);
-NN_INPUT_NEURONS = length(SIM_TIME) * 2; % i and w
-NN_HIDDEN_LAYER_NEURONS = 20;
-NN_OUTPUT_NEURONS = NN_OUT_PARAMETERS;
-
 %% Data generation
 % Output training set generation
-normalization_ranges = PARAMETERS_SETTINGS{{'min','max'},:}';
-out_train_set_norm = rand(NN_OUT_PARAMETERS, TRAINING_SIZE);
-out_train_set_ = logDecode(normalization_ranges, out_train_set_norm);
+out_train_set_norm = rand(NN_OUTPUT_NEURONS, TRAINING_SET_SIZE);
+out_train_set = motorParameters.denormalise(out_train_set_norm);
 sim_parameters_ = table();
-sim_parameters_{:, :} = out_train_set_';
-sim_parameters_.Properties.VariableNames = PARAMETERS_SETTINGS.Properties.VariableNames;
+sim_parameters_{:, :} = out_train_set';
+sim_parameters_.Properties.VariableNames = motorParameters.getNames();
 
 % Input training set generation
-in_train_set = zeros(NN_INPUT_NEURONS, TRAINING_SIZE);
+in_train_set = zeros(NN_INPUT_NEURONS, TRAINING_SET_SIZE);
 
-for(p = 1:TRAINING_SIZE)
-    [w, i] = simulate(sim_parameters_(p,:), ...
-                      'InputSignal', 'step', ...
-                      'Time', SIM_TIME);
-    in_train_set(:, p) = [w; i];
+for(p = 1:TRAINING_SET_SIZE)
+    motorSimulation.setParameters(sim_parameters_(p,:));
+    y = motorSimulation.run();
+    in_train_set(:, p) = [y(:, 1); y(:, 2)];
     if ~rem(p, 100)
-        dispStatus("Train set generation", 100 * p/TRAINING_SIZE);
+        dispStatus("Train set generation", 100 * p/TRAINING_SET_SIZE);
     end
 end
 
 %% Train
+trainFcn = 'trainlm';  % Levenberg-Marquardt backpropagation.
+
+% Create a Fitting Network
+net = fitnet(NN_HIDDEN_LAYER_NEURONS, trainFcn);
+
+% Setup Division of Data for Training, Validation, Testing
+net.divideParam.trainRatio = 0.7;
+net.divideParam.valRatio = 0.15;
+net.divideParam.testRatio = 0.15;
+
+% Train the Network
+[net, tr] = train(net, in_train_set, out_train_set_norm); %, 'UseParallel','yes','UseGPU','only');
