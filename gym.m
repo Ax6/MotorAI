@@ -30,4 +30,4 @@ net.divideParam.valRatio = 0.15;
 net.divideParam.testRatio = 0.15;
 
 % Train the Network
-[net, tr] = train(net, in_train_set, out_train_set_norm); %, 'UseParallel','yes','UseGPU','only');
+[net, tr] = train(net, in_train_set, out_train_set_norm, 'UseParallel','yes');%,'UseGPU','only');
