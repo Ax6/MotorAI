@@ -1,4 +1,4 @@
-# MotorAI
+# MotorAI [![License](https://img.shields.io/badge/License-MIT-red.svg?longCache=true&style=flat-square)](LICENSE)
 CoDeAS project about neural network electric motor parameter estimation.
 
 The first stage of this project is to aim at estimating all parameters

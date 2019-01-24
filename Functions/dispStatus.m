@@ -4,7 +4,7 @@ function dispStatus(message, percentage)
               fprintf('\b'); % delete previous counter display
           end
     end
-    fprintf(strcat(message, ": %d%%"), percentage);
+    fprintf(strcat(message, ": %d%%"), round(percentage));
     if percentage == 100
         fprintf('\n');
     end

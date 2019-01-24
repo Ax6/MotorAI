@@ -9,5 +9,5 @@ function [total, parameters, error, estimation] = performance(net, test, paramet
         error(:, p) = (parameters.normalise(test{p,:}') - out) .^ 2;
     end
     parameters = mean(error, 2);
-    total = mean(parameters);
+    total = mean(parameters(parameters < Inf));
 end

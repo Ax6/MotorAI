@@ -8,17 +8,18 @@ benchmark_file = load('DCMotors');
 %% SETTINGS
 % Simulation
 DATA_SAMPLING_FREQUENCY = 500;
-SIM_DURATION = 1;
+SIM_DURATION = 0.1;
 SIM_TIME = 0:1/DATA_SAMPLING_FREQUENCY:(SIM_DURATION - 1/DATA_SAMPLING_FREQUENCY);
 
 % Neural Network and Training
-TRAINING_SET_SIZE = 5000;
+TRAINING_SET_SIZE = 10000;
 NN_INPUT_NEURONS = 100; % i and w
-NN_HIDDEN_LAYER_NEURONS = 20;
+NN_HIDDEN_LAYER_NEURONS = [22 12];
 NN_OUTPUT_NEURONS = 5;
 
 %% SETUP
 Motors = benchmark_file.DCMotors(:, 4:end);
+Motors{:,'f'} = 1e-3;
 motorParameters = Parameters();
 motorSimulation = Simulation(SIM_TIME);
 
@@ -44,4 +45,4 @@ end
 gym;
 
 % Performance
-[p_total, p_params, p_error, p_motors] = performance(net, Motors, motorParameters, motorSimulation);
+[p_total, p_params, p_error, p_motors] = performance(net, Motors, motorParameters, motorSimulation)
