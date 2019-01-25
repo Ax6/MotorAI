@@ -16,8 +16,8 @@ NN_HIDDEN_LAYER_NEURONS = mancini.generateHiddenLayers();
 NN_OUTPUT_NEURONS = 5;
 
 % Training
-TRAINING_SET_SIZE = 40000;
-TRAINING_MAX_VALIDATION_FAILS = round(TRAINING_SET_SIZE * 0.0025);
+TRAINING_SET_SIZE = 50000;
+TRAINING_MAX_VALIDATION_FAILS = round(TRAINING_SET_SIZE * 0.0025) + 1;
 TRAINING_MAX_EPOCHS = 30000;
 TRAINING_GPU_ENABLE = true;
 
@@ -49,4 +49,5 @@ end
 gym;
 
 % Performance
-[p_total, p_params, p_error, p_motors] = performance(net, Motors, motorParameters, motorSimulation)
+[tp_total, tp_params, tp_error, tp_motors] = performance(net, sim_parameters_(1:TRAINING_MAX_VALIDATION_FAILS, :), motorParameters, motorSimulation);
+[p_total, p_params, p_error, p_motors] = performance(net, Motors, motorParameters, motorSimulation);
