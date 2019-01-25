@@ -1,6 +1,4 @@
-net_files = dir("net_*");
-
-Motors.f(:) = 5e-3;
+net_files = dir("net*");
 
 for i=1:length(net_files)
     name = net_files(i).name;
