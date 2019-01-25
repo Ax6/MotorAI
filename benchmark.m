@@ -13,22 +13,24 @@ SIM_TIME = 0:1/DATA_SAMPLING_FREQUENCY:(SIM_DURATION - 1/DATA_SAMPLING_FREQUENCY
 
 % Neural Network and Training
 TRAINING_SET_SIZE = 40000;
+TRAINING_GPU_ENABLE = true;
+TRAINING_MAX_VALIDATION_FAILS = round(TRAINING_SET_SIZE * 0.0025);
+TRAINING_MAX_EPOCHS = 30000;
 NN_INPUT_NEURONS = 100; % i and w
 NN_HIDDEN_LAYER_NEURONS = [150 50];
 NN_OUTPUT_NEURONS = 5;
 
 %% SETUP
 Motors = benchmark_file.DCMotors(:, 4:end);
-Motors{:,'f'} = 1e-3;
-Motors = Motors(1:10, :);
+Motors.L = Motors.L * 1e-3;
 motorParameters = Parameters();
 motorSimulation = Simulation(SIM_TIME);
 
 motorParameters.range('R', [1e-1 1e2]) ...
                .range('L', [1e-5 1e-2]) ...
                .range('K', [1e-3 1]) ...
-               .range('f', [1e-5 1e-2]) ...
-               .range('Jm', [1e-7 1e-4]);
+               .range('f', [1e-7 1e-4]) ...
+               .range('Jm', [1e-8 1e-4]);
 
 motorSimulation.addTF("[Jm f]", "[L*Jm, R*Jm + f*L, K*K + f*R]"); % Current (i) TF
 motorSimulation.addTF("K", "[L*Jm, R*Jm + f*L, K*K + f*R]"); % Speed (w) TF

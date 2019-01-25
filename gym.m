@@ -33,12 +33,12 @@ net.divideParam.valRatio = 0.15;
 net.divideParam.testRatio = 0.15;
 
 % Train the Network
-%in_train_set_GPU = nndata2gpu(in_train_set);
-%out_train_set_GPU = nndata2gpu(out_train_set);
-%net = configure(net, in_train_set, out_train_set);
-%net = train(net, in_train_set_GPU, out_train_set_GPU, 'showResources', 'yes');
-net.trainParam.max_fail = 100;
-net.trainParam.epochs = 30000;
+net.trainParam.max_fail = TRAINING_MAX_VALIDATION_FAILS;
+net.trainParam.epochs = TRAINING_MAX_EPOCHS;
 
-net.input.processFcns = {'mapminmax'};
-[net, tr] = train(net, double(in_train_set), double(out_train_set_norm), 'UseGPU','only', 'showResources','yes');
+if TRAINING_GPU_ENABLE
+    net.input.processFcns = {'mapminmax'};
+    [net, tr] = train(net, in_train_set, out_train_set_norm, 'UseGPU','only', 'showResources','yes');
+else
+    [net, tr] = train(net, in_train_set, out_train_set_norm, 'showResources','yes');
+end
