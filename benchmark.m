@@ -1,4 +1,3 @@
-clc;
 addpath Functions;
 addpath Classes;
 import Parameters.*;
@@ -11,14 +10,16 @@ DATA_SAMPLING_FREQUENCY = 500;
 SIM_DURATION = 0.1;
 SIM_TIME = 0:1/DATA_SAMPLING_FREQUENCY:(SIM_DURATION - 1/DATA_SAMPLING_FREQUENCY);
 
-% Neural Network and Training
+% Network
+NN_INPUT_NEURONS = 100; % i and w
+NN_HIDDEN_LAYER_NEURONS = mancini.generateHiddenLayers();
+NN_OUTPUT_NEURONS = 5;
+
+% Training
 TRAINING_SET_SIZE = 40000;
-TRAINING_GPU_ENABLE = true;
 TRAINING_MAX_VALIDATION_FAILS = round(TRAINING_SET_SIZE * 0.0025);
 TRAINING_MAX_EPOCHS = 30000;
-NN_INPUT_NEURONS = 100; % i and w
-NN_HIDDEN_LAYER_NEURONS = [150 50];
-NN_OUTPUT_NEURONS = 5;
+TRAINING_GPU_ENABLE = true;
 
 %% SETUP
 Motors = benchmark_file.DCMotors(:, 4:end);
