@@ -1,10 +1,9 @@
-clc;
 addpath Classes;
 import Coach.*
 
 % Coach
-COACH_ATTEMPTS = 2;
-START_ID = 1;
+COACH_ATTEMPTS = 20;
+START_ID = 17;
 
 mancini = Coach();
 mancini.set(Coach.SETTING_NN_NEURONS_GENERATION, Coach.GEN_MODE_RANDOM);
@@ -35,6 +34,7 @@ for id=START_ID:(COACH_ATTEMPTS + START_ID - 1)
     nnp.tp_motors{end} = tp_motors;
     nnp.p_motors{end} = p_motors;
     save(strcat('net', num2str(id), '.mat'), 'net');
+    save('performanceTable.mat', 'nnp');
 end
 
-save('performanceTable.mat', 'nnp');
+
