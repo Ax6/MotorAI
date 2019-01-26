@@ -1,4 +1,5 @@
 clc;
+addpath Classes;
 import Coach.*
 
 % Coach
@@ -6,8 +7,9 @@ COACH_ATTEMPTS = 2;
 START_ID = 1;
 
 mancini = Coach();
-mancini.setGenerationMode(Coach.GEN_MODE_RANDOM);
-mancini.hiddenLayersRanges = [[10 200]; [7 80]; [5 10]];
+mancini.set(Coach.SETTING_NN_NEURONS_GENERATION, Coach.GEN_MODE_RANDOM);
+mancini.set(Coach.SETTING_NN_LAYERS_GENERATION, Coach.GEN_MODE_STATIC);
+mancini.hiddenLayersRanges = [[140 170]; [40 60]];
 
 names = {'set_size', 'input_size', ...
     'hidden_size', 'output_size', 'training_performance', 'real_performance' ...

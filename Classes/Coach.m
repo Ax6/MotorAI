@@ -4,17 +4,18 @@ classdef Coach < handle
         GEN_MODE_RANDOM = 0;
         GEN_MODE_STATIC = 1;
         
-        SETTING_NN_INPUT_NEURONS = 0;
-        SETTING_NN_OUTPUT_NEURONS = 1;
-        SETTING_NN_HIDDEN_NEURONS = 2;
+        SETTING_NN_NEURONS_GENERATION = 0;
+        SETTING_NN_LAYERS_GENERATION = 1;
     end
     
     properties
         hiddenLayersRanges;
+        hiddenCount;
     end
     
     properties (Access = private)
-        mode;
+        settingNeuronsGeneration;
+        settingLayersGeneration;
     end
     
     methods
@@ -22,20 +23,20 @@ classdef Coach < handle
 
         end
         
-        function this = setGenerationMode(this, mode)
-           if mode == this.GEN_MODE_RANDOM
-               this.mode = this.GEN_MODE_RANDOM;
-           else
-               this.mode = this.GEN_MODE_STATIC;
+        function this = set(this, parameter, value)
+           if parameter == this.SETTING_NN_LAYERS_GENERATION
+               this.settingLayersGeneration = value;
+           elseif parameter == this.SETTING_NN_NEURONS_GENERATION
+               this.settingNeuronsGeneration = value;
            end
         end
         
         function layers = generateHiddenLayers(this)
             layers = 0;
-            if this.mode == this.GEN_MODE_RANDOM
-                layer_count = randperm(size(this.hiddenLayersRanges, 1), 1);
-                layers = zeros(1, layer_count);
-                for layer_index=1:layer_count
+            if this.settingNeuronsGeneration == this.GEN_MODE_RANDOM
+                layers_count = this.generateLayersCount();
+                layers = zeros(1, layers_count);
+                for layer_index=1:layers_count
                     layers(layer_index) = this.generateNeuronsCount(layer_index);
                 end
             end
@@ -47,5 +48,12 @@ classdef Coach < handle
             range = this.hiddenLayersRanges(layer_index, :);
             count = range(1) + randperm(range(2) - range(1), 1);
         end  
+        
+        function layer_count = generateLayersCount(this)
+            layer_count = size(this.hiddenLayersRanges, 1);
+            if this.SETTING_NN_LAYERS_GENERATION == this.GEN_MODE_RANDOM
+                layer_count = randperm(layer_count, 1);
+            end
+        end
     end
 end
