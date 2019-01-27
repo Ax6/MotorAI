@@ -1,4 +1,29 @@
-runMotorsSimulations(Motors, motorSimulation);
+plotPerformanceOnSettings(Motors);
+
+function plotPerformanceOnSettings(Motors)
+    file = load('performanceTable');
+    ptable = file.performanceTable;
+    layers = ptable.HiddenLayersNeurons;
+    llayers = zeros(size(ptable, 1), 3);
+    performance = ptable.RealCasePerformance;
+    for i=1:size(ptable,1)
+        val = str2num(layers(i, :));
+        toFill = val;
+        toFill(end + (3 - length(val))) = 0;
+        llayers(i, :) = toFill;
+    end
+   
+
+    
+    [xq,yq] = meshgrid(0:200, 0:100);
+    vq = griddata(llayers(:,1), llayers(:,2),performance,xq,yq);
+    mesh(xq,yq,vq)
+    hold on
+    %plot3(llayers(:,1), llayers(:,2),performance)
+    surf(xq, yq, vq, 'EdgeColor','none','LineStyle','none');
+    hold on
+    scatter3(llayers(:,1), llayers(:,2), performance,'x','r');
+end
 
 function runMotorsSimulations(Motors, motorSimulation)    
     figure(1);
