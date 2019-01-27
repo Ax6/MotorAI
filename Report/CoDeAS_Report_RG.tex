@@ -65,7 +65,7 @@
 
 \section{\textbf{Introduction}}
 
-The aim of the present work was to develop on MATLAB suite a Neural Network able to estimate the following relevant parameters of a generic brushed DC Motors:
+The aim of the present work is the development on MATLAB suite a Neural Network able to estimate the following relevant parameters of a generic brushed DC Motors:
 
 \begin{table}[h!] % h! = here inconditionally
 \centering	
@@ -95,7 +95,7 @@ Receiving at the input specific measured quantities, which are:
  \hline
  Symbol & Name & Unit Measure \\ [0.5ex]  
  \hline\hline
-	\textit{$\omega$(t)} & Output Rotational Speed & rpm\\ 
+	\textit{$\omega$(t)} & Output Rotational Speed & $\textfrac{rad}{s}$\\ 
 	\textit{i(t)} & Input Current & A\\
  \hline
 \end{tabular}
@@ -103,7 +103,7 @@ Receiving at the input specific measured quantities, which are:
 \label{table:inputprm}
 \end{table}
 
-The first chapter describes the considered generic motor mathematical model, including the simplifications adopted. In the second chapter the methodology and criteria employed for the design of the Neural Network are described. Eventually, the report concludes with the results attained.
+The first chapter describes the considered electric motor mathematical model, including the simplifications adopted. In the second chapter the methodology and criteria employed for the design of the Neural Network are described. Eventually, the report concludes with the results attained.
 
 %----------------------------------------------------------------------------------------
 %	SECTION 2: DC MOTOR MODEL
@@ -166,8 +166,8 @@ Different assumptions have been made before proceeding with the development of t
 
 \subsection{Dataset}
 
-The motors collected for the generation of the NN input dataset are 40. Their relevant characteristic have been listed within a spreadsheet and categorized.
-\ref{table:ranges} shows the ranges in which the parameters fit.
+The motors collected for the generation of the NN input dataset are 40. Their relevant characteristics have been listed within a spreadsheet and categorized.
+Table \ref{table:ranges} shows the ranges in which the parameters fit.
 
 \begin{table}[h!] % h! = here inconditionally
 \centering	
@@ -176,26 +176,41 @@ The motors collected for the generation of the NN input dataset are 40. Their re
  \hline
  Parameter & \textit{R} & \textit{L} & \textit{K} & \textit{f} & \textit{J$_{m}$}\\ [0.5ex]  
  \hline
- Range & [1e-1 1e2] & [1e-5 1e-2] & [1e-3 1] & [1e-7 1e-4] & [1e-8 1e-4]\\
+ Range & [1e-1, 1e2] & [1e-5, 1e-2] & [1e-3, 1] & [1e-7, 1e-4] & [1e-8, 1e-4]\\
  \hline
 \end{tabular}
-\caption{Other parameters}
+\caption{Ranges}
 \label{table:ranges}
 \end{table}
-		 %----------------------------------------------------------------------------------------
-%	SECTION 3
+
 %----------------------------------------------------------------------------------------
-\newpage
+%	SECTION 3: NEURAL NETWORK
+%----------------------------------------------------------------------------------------
 
-\section{\textbf{Section 3}}
+\section{\textbf{Neural Network}}
 
-Text
+MATLAB Deep Learning Toolbox offers functionalities to easily build feed-forward networks with sigmoid neurons and back-propagation training algorithm. It is possible to launch the Neural Network training both by command-line instructions and through the application wizard.
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[scale=1]{Images/nftool.png}
+	\caption{NN standard architecture}
+	\label{fig:nftoolarch}
+\end{figure}
+
+In the following subsections the factors influencing the training will be described. Throughout the refinement phase, they have been tuned in order to reach progressively better performance.
 
 %------------------------------------------------
 
-\subsection{Subsection 3.1}
+\subsection{Input \& Output}
 
-Text
+As previously mentioned, Table \ref{table:inputprm} lists the parameters used as inputs for the NN. 
+Knowing the ranges in which the desired parameters could sweep, different randomized sets of output values have been used as network output targets. 
+The corresponding input vectors \textit{$ \omega $(t)} and \textit{i(t)} data have been calculated from their respective transfer functions
+
+\begin{equation}
+	\omega = \dfrac{K}{s^2J_mL+}
+\end{equation} 
 
 %------------------------------------------------
 
