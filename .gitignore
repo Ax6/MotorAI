@@ -8,3 +8,5 @@ myNeuralNetworkFunction_test*.m
 *.slxc
 
 net*.mat
+
+slprj/*
