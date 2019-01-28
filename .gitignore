@@ -9,4 +9,7 @@ myNeuralNetworkFunction_test*.m
 
 net*.mat
 
-slprj/*
+slprj/**
+
+*.slxc
+

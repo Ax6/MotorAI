@@ -1,4 +1,4 @@
-plotPerformanceOnSettings(Motors);
+runMotorsPerformance(Motors, motorParameters, motorSimulation);
 
 function plotPerformanceOnSettings(Motors)
     file = load('performanceTable');
