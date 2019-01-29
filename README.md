@@ -25,5 +25,9 @@ Trained neural networks are compared with each other
 based on their performance. Network performance is calculated on
 real DC Motors taken from various datasheets.
 
+## Report
+
+[Link to Dropbox](https://www.dropbox.com/s/a599eki0ps5sp7x/CoDeAS_Report_RG.pdf?dl=0)
+
 ---
 Aaron Russo, Edoardo Galletti
