@@ -11,6 +11,7 @@ Following model simplifications have been taken into account
 1. **Ke** (Electromotive constant) and **Kt** (Torque constant)
 are considered equal.
 2. Motor is **unloaded** therefore the only inertia is the rotor inertia
+3. Viscous coefficient **f** assumed equal to the ratio nominal Torque / nominal Speed of the Motor.
 
 DC Motor parameters to be estimated
 - **R** Winding resistance
